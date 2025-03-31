@@ -1,4 +1,4 @@
-![alt](projectimg.png)
+![alt](ufwmanager.png)
 
 A simple tool for IP management on servers. Currently this python file is executable exclusively on Debian-based servers, as the bash commands are specific to the filepath and syntax of Debian architecture.
 
