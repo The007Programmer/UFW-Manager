@@ -46,11 +46,11 @@ A simple tool for IP management on servers. Currently this python file is execut
 ## Credits
 - No external sources.
 - Made with
-    - [![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)](#)[![Bash](https://img.shields.io/badge/Bash-4EAA25?logo=gnubash&logoColor=fff)](#)
+    - [![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)](#) [![Bash](https://img.shields.io/badge/Bash-4EAA25?logo=gnubash&logoColor=fff)](#)
 - Made on
     - [![Visual Studio Code](https://custom-icon-badges.demolab.com/badge/Visual%20Studio%20Code-0078d7.svg?logo=vsc&logoColor=white)](#)
 - Made for
-    - [![Debian](https://img.shields.io/badge/Debian-A81D33?logo=debian&logoColor=fff)](#)[![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?logo=ubuntu&logoColor=white)](#)
+    - [![Debian](https://img.shields.io/badge/Debian-A81D33?logo=debian&logoColor=fff)](#) [![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?logo=ubuntu&logoColor=white)](#)
 
 ## License
 - Located [here](https://github.com/The007Programmer/UFW-Manager/blob/master/LICENSE.md).
