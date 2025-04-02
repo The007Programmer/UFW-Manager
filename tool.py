@@ -63,24 +63,38 @@ def manager():
     name = input("\nUser Name? ")
     ip = input("User IP? ")
     
-    # Improved port input handling
+    # Protocol selection
     while True:
-        ports_input = input("Which ports to allow/block? (e.g. '80,443,8080' or 'all' for all ports) ")
+        protocol = input("Select protocol (tcp/udp/all): ").lower()
+        if protocol in ['tcp', 'udp', 'all']:
+            break
+        print("Invalid protocol! Please enter 'tcp', 'udp', or 'all'")
+    
+    # Improved port input handling - one port at a time
+    ports = []
+    while True:
+        ports_input = input("Enter a port number (or 'done' to finish, 'all' for all ports): ")
+        
         if ports_input.lower() == 'all':
             ports = 'all'
             break
-        
+        elif ports_input.lower() == 'done':
+            if not ports:
+                print("Please enter at least one port or 'all'")
+                continue
+            break
+            
         try:
-            # Split by comma and clean up whitespace
-            port_list = [int(p.strip()) for p in ports_input.split(',')]
-            # Validate all ports
-            if all(1 <= port <= 65535 for port in port_list):
-                ports = port_list
-                break
+            port = int(ports_input.strip())
+            if 1 <= port <= 65535:
+                if port not in ports:
+                    ports.append(port)
+                else:
+                    print("Port already added!")
             else:
                 print("Invalid port number! Ports must be between 1-65535")
         except ValueError:
-            print("Invalid port format! Use comma-separated numbers or 'all'")
+            print("Invalid input! Please enter a number, 'done', or 'all'")
 
     w_b = input("Whitelist or Blacklist? (w/b) ")
     match w_b:
@@ -101,10 +115,11 @@ def manager():
     with open(db_file, 'r') as file:
         db = json.load(file)
 
-    # Modified data structure to include ports
+    # Modified data structure to include ports and protocol
     user_data = {
         "ip": ip,
-        "ports": ports
+        "ports": ports,
+        "protocol": protocol
     }
 
     match w_b:
@@ -119,19 +134,31 @@ def manager():
                         db.setdefault("whitelist", {})[name] = user_data
                         # Generate UFW command for all ports at once
                         if ports == 'all':
-                            run_bash_cmd(f"sudo ufw allow from {ip}")
+                            if protocol == 'all':
+                                run_bash_cmd(f"sudo ufw allow from {ip}")
+                            else:
+                                run_bash_cmd(f"sudo ufw allow from {ip} proto {protocol}")
                         else:
                             ports_str = ','.join(map(str, ports))
-                            run_bash_cmd(f"sudo ufw allow from {ip} to any port {ports_str}")
+                            if protocol == 'all':
+                                run_bash_cmd(f"sudo ufw allow from {ip} to any port {ports_str}")
+                            else:
+                                run_bash_cmd(f"sudo ufw allow from {ip} to any port {ports_str} proto {protocol}")
                         print(f"\n{name} has been moved to the whitelist.\n")
                 case _:
                     db.setdefault("whitelist", {})[name] = user_data
                     # Generate UFW command for all ports at once
                     if ports == 'all':
-                        run_bash_cmd(f"sudo ufw allow from {ip}")
+                        if protocol == 'all':
+                            run_bash_cmd(f"sudo ufw allow from {ip}")
+                        else:
+                            run_bash_cmd(f"sudo ufw allow from {ip} proto {protocol}")
                     else:
                         ports_str = ','.join(map(str, ports))
-                        run_bash_cmd(f"sudo ufw allow from {ip} to any port {ports_str}")
+                        if protocol == 'all':
+                            run_bash_cmd(f"sudo ufw allow from {ip} to any port {ports_str}")
+                        else:
+                            run_bash_cmd(f"sudo ufw allow from {ip} to any port {ports_str} proto {protocol}")
                     print(f"\n{name} has been added to the whitelist.\n")
         case 'b':
             match True:
@@ -144,19 +171,31 @@ def manager():
                         db.setdefault("blacklist", {})[name] = user_data
                         # Generate UFW command for all ports at once
                         if ports == 'all':
-                            run_bash_cmd(f"sudo ufw deny from {ip}")
+                            if protocol == 'all':
+                                run_bash_cmd(f"sudo ufw deny from {ip}")
+                            else:
+                                run_bash_cmd(f"sudo ufw deny from {ip} proto {protocol}")
                         else:
                             ports_str = ','.join(map(str, ports))
-                            run_bash_cmd(f"sudo ufw deny from {ip} to any port {ports_str}")
+                            if protocol == 'all':
+                                run_bash_cmd(f"sudo ufw deny from {ip} to any port {ports_str}")
+                            else:
+                                run_bash_cmd(f"sudo ufw deny from {ip} to any port {ports_str} proto {protocol}")
                         print(f"\n{name} has been moved to the blacklist.\n")
                 case _:
                     db.setdefault("blacklist", {})[name] = user_data
                     # Generate UFW command for all ports at once
                     if ports == 'all':
-                        run_bash_cmd(f"sudo ufw deny from {ip}")
+                        if protocol == 'all':
+                            run_bash_cmd(f"sudo ufw deny from {ip}")
+                        else:
+                            run_bash_cmd(f"sudo ufw deny from {ip} proto {protocol}")
                     else:
                         ports_str = ','.join(map(str, ports))
-                        run_bash_cmd(f"sudo ufw deny from {ip} to any port {ports_str}")
+                        if protocol == 'all':
+                            run_bash_cmd(f"sudo ufw deny from {ip} to any port {ports_str}")
+                        else:
+                            run_bash_cmd(f"sudo ufw deny from {ip} to any port {ports_str} proto {protocol}")
                     print(f"\n{name} has been added to the blacklist.\n")
 
     with open(db_file, 'w') as file:
