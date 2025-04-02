@@ -17,6 +17,14 @@ def run_bash_cmd(command):
         # Error if bash binary is not found
         print("Error: Bash not found.")
 
+def get_db_path():
+    """
+    Get the absolute path to the database file.
+    """
+    # Get the directory where the script is located
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(script_dir, 'db.json')
+
 def main():
     """
     DESC: Main program run. Checks UFW status and enables it if inactive.
@@ -54,23 +62,25 @@ def manager():
     # Ask user specific details for modifying the lists
     name = input("\nUser Name? ")
     ip = input("User IP? ")
-    ports = input("Which ports to allow/block? (e.g. '80, 443' or 'all' for all ports) ")
     
-    # Process ports input
-    if ports.lower() != 'all':
+    # Improved port input handling
+    while True:
+        ports_input = input("Which ports to allow/block? (e.g. '80,443,8080' or 'all' for all ports) ")
+        if ports_input.lower() == 'all':
+            ports = 'all'
+            break
+        
         try:
-            # Validate port numbers
-            port_list = [int(p.strip()) for p in ports.split(',')]
-            for port in port_list:
-                if port < 1 or port > 65535:
-                    print("\nInvalid port number! Ports must be between 1-65535")
-                    manager()
-                    return
-            ports = port_list
+            # Split by comma and clean up whitespace
+            port_list = [int(p.strip()) for p in ports_input.split(',')]
+            # Validate all ports
+            if all(1 <= port <= 65535 for port in port_list):
+                ports = port_list
+                break
+            else:
+                print("Invalid port number! Ports must be between 1-65535")
         except ValueError:
-            print("\nInvalid port format! Use comma-separated numbers or 'all'")
-            manager()
-            return
+            print("Invalid port format! Use comma-separated numbers or 'all'")
 
     w_b = input("Whitelist or Blacklist? (w/b) ")
     match w_b:
@@ -81,10 +91,12 @@ def manager():
             manager()
             return
 
-    db_file = 'db.json'
+    db_file = get_db_path()
     if not os.path.exists(db_file):
-        print(f"\nDatabase file '{db_file}' does not exist in the current directory.\n")
-        return
+        print(f"\nDatabase file '{db_file}' does not exist. Creating it now...\n")
+        # Create the database file with initial structure
+        with open(db_file, 'w') as file:
+            json.dump({"whitelist": {}, "blacklist": {}}, file, indent=2)
 
     with open(db_file, 'r') as file:
         db = json.load(file)
@@ -105,10 +117,21 @@ def manager():
                     if switch == 'y':
                         db["blacklist"].pop(name)
                         db.setdefault("whitelist", {})[name] = user_data
-                        run_bash_cmd(f"sudo ufw allow from <IP> to any port <PORT1> proto <PROTOCOL>")
+                        # Generate UFW command for all ports at once
+                        if ports == 'all':
+                            run_bash_cmd(f"sudo ufw allow from {ip}")
+                        else:
+                            ports_str = ','.join(map(str, ports))
+                            run_bash_cmd(f"sudo ufw allow from {ip} to any port {ports_str}")
                         print(f"\n{name} has been moved to the whitelist.\n")
                 case _:
                     db.setdefault("whitelist", {})[name] = user_data
+                    # Generate UFW command for all ports at once
+                    if ports == 'all':
+                        run_bash_cmd(f"sudo ufw allow from {ip}")
+                    else:
+                        ports_str = ','.join(map(str, ports))
+                        run_bash_cmd(f"sudo ufw allow from {ip} to any port {ports_str}")
                     print(f"\n{name} has been added to the whitelist.\n")
         case 'b':
             match True:
@@ -119,9 +142,21 @@ def manager():
                     if switch == 'y':
                         db["whitelist"].pop(name)
                         db.setdefault("blacklist", {})[name] = user_data
+                        # Generate UFW command for all ports at once
+                        if ports == 'all':
+                            run_bash_cmd(f"sudo ufw deny from {ip}")
+                        else:
+                            ports_str = ','.join(map(str, ports))
+                            run_bash_cmd(f"sudo ufw deny from {ip} to any port {ports_str}")
                         print(f"\n{name} has been moved to the blacklist.\n")
                 case _:
                     db.setdefault("blacklist", {})[name] = user_data
+                    # Generate UFW command for all ports at once
+                    if ports == 'all':
+                        run_bash_cmd(f"sudo ufw deny from {ip}")
+                    else:
+                        ports_str = ','.join(map(str, ports))
+                        run_bash_cmd(f"sudo ufw deny from {ip} to any port {ports_str}")
                     print(f"\n{name} has been added to the blacklist.\n")
 
     with open(db_file, 'w') as file:
@@ -136,7 +171,7 @@ def manager():
 
 def show_db():
     # Load database file if it exists, otherwise exit function
-    db_file = 'db.json'
+    db_file = get_db_path()
     if os.path.exists(db_file):
         with open(db_file, 'r') as file:
             db = json.load(file)
@@ -144,7 +179,7 @@ def show_db():
         print(f"\nDatabase file '{db_file}' not found.\n")
         return
     # Ask user which list to view: whitelist, blacklist or all
-    which = input("\nWhich database would you like to see? Whitelist, Blacklist or All? (w/b/a)\n")
+    which = input("\nWhich database would you like to see? Whitelist, Blacklist or All? (w/b/a)\n\n")
     # Selecting proper list to display using match-case
     match which:
         case "w":
