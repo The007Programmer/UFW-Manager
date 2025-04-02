@@ -217,16 +217,73 @@ def show_db():
     else:
         print(f"\nDatabase file '{db_file}' not found.\n")
         return
+
+    def format_user_data(user_data):
+        """Helper function to format user data in a readable way"""
+        ports = user_data.get('ports', [])
+        protocol = user_data.get('protocol', 'all')
+        ip = user_data.get('ip', '')
+        
+        if ports == 'all':
+            ports_str = "All ports"
+        else:
+            ports_str = ", ".join(map(str, ports))
+            
+        return f"IP: {ip}\n    Protocol: {protocol}\n    Ports: {ports_str}"
+
     # Ask user which list to view: whitelist, blacklist or all
     which = input("\nWhich database would you like to see? Whitelist, Blacklist or All? (w/b/a)\n\n")
+    
     # Selecting proper list to display using match-case
     match which:
         case "w":
-            print("\n===== WHITELIST =====\n\n" + f"{json.dumps(db.get('whitelist', {}), indent=4)}\n")
+            whitelist = db.get('whitelist', {})
+            if not whitelist:
+                print("\n===== WHITELIST =====\nNo users in whitelist.\n")
+            else:
+                print("\n===== WHITELIST =====\n")
+                for name, data in whitelist.items():
+                    print(f"User: {name}")
+                    print(format_user_data(data))
+                    print("-" * 40)
+                print()
         case "b":
-            print("\n===== BLACKLIST =====\n\n" + f"{json.dumps(db.get('blacklist', {}), indent=4)}\n")
+            blacklist = db.get('blacklist', {})
+            if not blacklist:
+                print("\n===== BLACKLIST =====\nNo users in blacklist.\n")
+            else:
+                print("\n===== BLACKLIST =====\n")
+                for name, data in blacklist.items():
+                    print(f"User: {name}")
+                    print(format_user_data(data))
+                    print("-" * 40)
+                print()
         case "a":
-            print("\n===== ALL LISTS =====\n\n" + f"{json.dumps(db, indent=4)}\n")
+            whitelist = db.get('whitelist', {})
+            blacklist = db.get('blacklist', {})
+            
+            print("\n===== ALL LISTS =====\n")
+            
+            print("WHITELIST:")
+            print("=" * 40)
+            if not whitelist:
+                print("No users in whitelist.")
+            else:
+                for name, data in whitelist.items():
+                    print(f"User: {name}")
+                    print(format_user_data(data))
+                    print("-" * 40)
+            
+            print("\nBLACKLIST:")
+            print("=" * 40)
+            if not blacklist:
+                print("No users in blacklist.")
+            else:
+                for name, data in blacklist.items():
+                    print(f"User: {name}")
+                    print(format_user_data(data))
+                    print("-" * 40)
+            print()
 
 # Starting the program
 main()
