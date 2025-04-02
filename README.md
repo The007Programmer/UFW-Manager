@@ -53,7 +53,7 @@ A simple tool for IP management on servers. Currently this python file is execut
     - [![Debian](https://img.shields.io/badge/Debian-A81D33?logo=debian&logoColor=fff)](#) [![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?logo=ubuntu&logoColor=white)](#)
 
 ## License
-- Located [here](https://github.com/The007Programmer/UFW-Manager/blob/master/LICENSE.md).
+- Located [here](https://github.com/The007Programmer/UFW-Manager/blob/main/LICENSE.md).
 
 ### Commits Key
 - SAFE: Stable and production-ready code; can be safely deployed.

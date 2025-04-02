@@ -105,6 +105,7 @@ def manager():
                     if switch == 'y':
                         db["blacklist"].pop(name)
                         db.setdefault("whitelist", {})[name] = user_data
+                        run_bash_cmd(f"sudo ufw allow from <IP> to any port <PORT1> proto <PROTOCOL>")
                         print(f"\n{name} has been moved to the whitelist.\n")
                 case _:
                     db.setdefault("whitelist", {})[name] = user_data
