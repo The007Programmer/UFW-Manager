@@ -1,4 +1,12 @@
 {
-  "whitelist": {},
+  "whitelist": {
+    "goon": {
+      "ip": "1.23.45.67",
+      "ports": [
+        80
+      ],
+      "protocol": "all"
+    }
+  },
   "blacklist": {}
 }

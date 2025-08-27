@@ -29,7 +29,7 @@ A simple tool for IP management on servers. Currently this python file is execut
 |Stores and recieves IPs from JSON file|✅|
 |Status commands (who is currently whitelisted)|✅|
 |Interactive IP addition/removal|✅|
-|Windows Server support|✅|
+|Database verification with background command runs|✅|
 
 ## Installation and Usage
 1. Download the ZIP file.
@@ -60,7 +60,6 @@ A simple tool for IP management on servers. Currently this python file is execut
 - TEST: Code meant for testing or experimental changes; safe but does not affect the main program directly; stable for version control.
 - UNST: Unstable commit with potential issues; not suitable for production, used for backup or testing phases.
 - HTFX: Hotfix for critical issues.
-- REFA: Refactor or restructure code for improved readability, maintainability, or efficiency, with no changes to core functionality.
-- RESD: Revert previous changes due to instability or issues encountered during testing; restores the code to a prior stable state.
+- REVT: Revert previous changes due to instability or issues encountered during testing; restores the code to a prior stable state.
 - BUGF: Bug fix or issue resolution, fixing known problems in the code without adding new functionality.
 - DOCS: Documentation update, including comments, README files, or other forms of documentation to improve clarity and understanding.
