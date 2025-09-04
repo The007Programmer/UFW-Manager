@@ -3,3 +3,5 @@ export PYBUILD_NAME=ufwmanager
 
 %:
 	dh $@ --with python3 --buildsystem=pybuild
+
+    
