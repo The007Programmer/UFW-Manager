@@ -1,1 +1,1 @@
-../src/tool.py usr/bin/ufwmanager
+src/tool.py usr/bin
