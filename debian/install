@@ -1,1 +1,2 @@
-src/tool.py usr/bin
+src/tool.py usr/bin/
+src/db.json usr/share/ufwmanager/
