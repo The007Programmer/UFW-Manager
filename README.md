@@ -32,10 +32,17 @@ A simple tool for IP management on servers. Currently this python file is execut
 |Database verification with background command runs|✅|
 
 ## Installation and Usage
-1. Download the ZIP file.
-2. Extract contents to desired run folder (move to server if downloaded on computer).
-3. Open or `cd` to the project directory in a terminal.
-4. Run `python3 tool.py` to open the tool.
+
+Install my software PPA:
+- `sudo add-apt-repository ppa:aahilshaikh/software`
+
+Update APT cache:
+- `sudo apt update`
+
+Install `ufwmanager` package:
+- `sudo apt install ufwmanager`
+
+**NOTE: Package currently published only for Ubuntu 24.04 (Noble Numbat).**
 
 ### Requirements
 - `Python 3.10+` for running the application.
@@ -54,12 +61,3 @@ A simple tool for IP management on servers. Currently this python file is execut
 
 ## License
 - Located [here](https://github.com/The007Programmer/UFW-Manager/blob/main/LICENSE.md).
-
-### Commits Key
-- SAFE: Stable and production-ready code; can be safely deployed.
-- TEST: Code meant for testing or experimental changes; safe but does not affect the main program directly; stable for version control.
-- UNST: Unstable commit with potential issues; not suitable for production, used for backup or testing phases.
-- HTFX: Hotfix for critical issues.
-- REVT: Revert previous changes due to instability or issues encountered during testing; restores the code to a prior stable state.
-- BUGF: Bug fix or issue resolution, fixing known problems in the code without adding new functionality.
-- DOCS: Documentation update, including comments, README files, or other forms of documentation to improve clarity and understanding.
