@@ -51,7 +51,6 @@ Install `ufwmanager` package:
 - `subprocess` for bash handling.
 
 ## Credits
-- No external sources.
 - Made with
     - [![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff)](#) [![Bash](https://img.shields.io/badge/Bash-4EAA25?logo=gnubash&logoColor=fff)](#)
 - Made on
